@@ -38,4 +38,4 @@ String.prototype.db=function(type,add){
     }
     fs.writeFile(__dirname+"\\"+`database\\${this+".db"}`, JSON.stringify(DBstr), 'utf8', function(error){console.log(error)});
 }
-console.log("ex".db("aa"));
+console.log("ex".a.db("aa"));
