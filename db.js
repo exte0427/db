@@ -1,17 +1,29 @@
 const fs = require('fs');
 String.prototype.db=function(type,add){
-    if(type!=undefined){type="main."+type;}
-    !fs.existsSync("database") && fs.mkdirSync("database"); //database 폴더가 없으면 추가
-    try{fs.readFileSync(__dirname+"\\"+'database\\'+this+".db").toString();}
-    catch(err){
-         fs.open(__dirname+"\\"+`database\\${this+".db"}`,'w',function(err,fd){
-        });
-    }
+    const promise1 = new Promise((resolve, reject) => {
+        if(type!=undefined){type="main."+type;}
+        !fs.existsSync("database") && fs.mkdirSync("database"); //database 폴더가 없으면 추가
+        try{fs.readFileSync(__dirname+"\\"+'database\\'+this+".db").toString();resolve();}
+        catch(err){
+            fs.open(__dirname+"\\"+`database\\${this+".db"}`,'w',function(err,fd){
+                resolve();
+            });
+        }
+    });
+    promise1.then(() => {
     strASDffdfS=__dirname.split("\\").join("\\\\")+"\\\\"+'database\\\\'+this+".db";
+    const promise2 = new Promise((resolve, reject) => {
+        if(fs.readFileSync(strASDffdfS).toString()==""){
+            fs.writeFile(__dirname+"\\"+'database\\'+this+".db", "{\"main\":{}}", 'utf8', function(error){
+                resolve();
+            });
+        }
+        else{
+            resolve();
+        }
+    });
+    promise2.then(() => {
     eval(`DBstr=JSON.parse(fs.readFileSync(\`${strASDffdfS}\`).toString())`);
-    if(DBstr==""){
-         fs.writeFile(__dirname+"\\"+'database\\'+this+".db", "{\"main\":{}}", 'utf8', function(error){console.log(error)});
-    }
     if(type==undefined){
         return fs.readFileSync(__dirname+"\\"+'database\\'+this+".db").toString();
     }
@@ -23,7 +35,6 @@ String.prototype.db=function(type,add){
         }
          eval(`DBstr.${y}={}`);
          eval(`DBstr.${file} = '${add}'`);
-        console.log(y);
     }
     else if(type.indexOf("set")!=-1){
         let file=type.replace(".set","");
@@ -36,6 +47,8 @@ String.prototype.db=function(type,add){
     else{
         return eval(`DBstr.${type}`);
     }
-    fs.writeFile(__dirname+"\\"+`database\\${this+".db"}`, JSON.stringify(DBstr), 'utf8', function(error){console.log(error)});
+    fs.writeFile(__dirname+"\\"+`database\\${this+".db"}`, JSON.stringify(DBstr), 'utf8', function(error){});
+    });
+    });
 }
-console.log("ex".a.db("aa"));
+module.exports=String.prototype.db;
