@@ -1,2 +1,3 @@
 # DB
-npm
+`npm i esetdb`
+
