@@ -1,54 +1,58 @@
 const fs = require('fs');
-String.prototype.db=function(type,add){
-    const promise1 = new Promise((resolve, reject) => {
-        if(type!=undefined){type="main."+type;}
-        !fs.existsSync("database") && fs.mkdirSync("database"); //database 폴더가 없으면 추가
-        try{fs.readFileSync(__dirname+"\\"+'database\\'+this+".db").toString();resolve();}
-        catch(err){
-            fs.open(__dirname+"\\"+`database\\${this+".db"}`,'w',function(err,fd){
-                resolve();
-            });
-        }
+const dirname=__dirname+"\\database";
+const db=module.exports={};
+!fs.existsSync(dirname) && fs.mkdirSync(dirname);
+db.data=(str)=>{
+    file=dirname+"\\"+str.split(".")[0]+".db";
+    let splits = str.replace(str.split(".")[0]+".","").split(".");
+    let DBs=JSON.parse(fs.readFileSync(file).toString());
+    splits.forEach(l => {
+        DBs = DBs[l];
     });
-    promise1.then(() => {
-    strASDffdfS=__dirname.split("\\").join("\\\\")+"\\\\"+'database\\\\'+this+".db";
-    const promise2 = new Promise((resolve, reject) => {
-        if(fs.readFileSync(strASDffdfS).toString()==""){
-            fs.writeFile(__dirname+"\\"+'database\\'+this+".db", "{\"main\":{}}", 'utf8', function(error){
-                resolve();
-            });
+    return DBs;
+}
+db.del=(str)=>{
+    const file=dirname+"\\"+str.split(".")[0]+".db";
+    dbVAR1=JSON.parse(fs.readFileSync(file).toString());
+        let tttis="";
+        for(let i=1;i<str.split(".").length;i++){
+            tttis=tttis+"."+str.split(".")[i];
+        }
+        if(tttis!=""){
+            eval(`delete dbVAR1${tttis}`);
+            fs.writeFile(file, JSON.stringify(dbVAR1), 'utf8', function(error){});
         }
         else{
-            resolve();
+            fs.unlink(file,()=>{});
         }
-    });
-    promise2.then(() => {
-    eval(`DBstr=JSON.parse(fs.readFileSync(\`${strASDffdfS}\`).toString())`);
-    if(type==undefined){
-        return fs.readFileSync(__dirname+"\\"+'database\\'+this+".db").toString();
-    }
-    else if(type.indexOf("add")!=-1){
-        let file=type.replace(".add","");
-        let y="";
-        for(let i=0;i<file.split(".").length-1;i++){
-            y=y+file.split(".")[i];
-        }
-         eval(`DBstr.${y}={}`);
-         eval(`DBstr.${file} = '${add}'`);
-    }
-    else if(type.indexOf("set")!=-1){
-        let file=type.replace(".set","");
-         eval(`DBstr.${file}='${add}'`);
-    }
-    else if(type.indexOf("del")!=-1){
-        let file=type.replace(".del","");
-         eval(`delete DBstr.${file}`);
-    }
-    else{
-        return eval(`DBstr.${type}`);
-    }
-    fs.writeFile(__dirname+"\\"+`database\\${this+".db"}`, JSON.stringify(DBstr), 'utf8', function(error){});
-    });
-    });
 }
-module.exports=String.prototype.db;
+db.add=(str,str2)=>{
+    const file=dirname+"\\"+str.split(".")[0]+".db";
+    try{
+        //파일이 있을때
+        dbVAR1=JSON.parse(fs.readFileSync(file).toString());
+        let tttis="";
+        for(let i=1;i<str.split(".").length;i++){
+            tttis=tttis+"."+str.split(".")[i];
+        }
+        let tttis2="";
+        for(let i=1;i<str.split(".").length-1;i++){
+            tttis2=tttis2+"."+str.split(".")[i];
+        }
+        if(eval(`typeof dbVAR1${tttis2} == "string"`)){
+            eval(`dbVAR1${tttis2}={}`);
+        }
+        eval(`dbVAR1${tttis}="${str2}"`);
+        fs.writeFile(file, JSON.stringify(dbVAR1), 'utf8', function(error){});
+    }
+    catch(err){
+        //파일이 없을때
+        dbVAR1={};
+        let tttis="";
+        for(let i=1;i<str.split(".").length;i++){
+            tttis=tttis+"."+str.split(".")[i];
+        }
+        eval(`dbVAR1${tttis}="${str2}"`);
+        fs.appendFile(file,JSON.stringify(dbVAR1),()=>{});
+    }
+}
