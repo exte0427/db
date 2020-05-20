@@ -1,11 +1,20 @@
 {
   "name": "esetdb",
-  "version": "1.1.0",
-  "description": "",
+  "version": "2.1.2",
+  "description": "this is esetdb,\nconst db = require('esetdb');\n`name`.db()\n`name`.db(`a.add`,`d`)\n`name`.db(`a.set`,`d`)\n`name`.db(`a.a.del`,`d`)\n`name`.db(`a.del`)\n`name`.db(`a.a`)",
   "main": "db.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "db",
+  "license": "MIT",
+  "keywords": [
+    "db",
+    "eset",
+    "quick"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/exte0427/db"
+  }
 }
